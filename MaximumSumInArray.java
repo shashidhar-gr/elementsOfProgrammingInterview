@@ -1,14 +1,55 @@
 public class MaximumSumInArray {
         public static void main(String[] args) {
             int k = 3;
-            int[] A = {4, 2, 1, 7, 8, 1, 2, 8, 1, 0};
+            int[] A = {4, 2, 2, 7, 8, 1, 2, 8, 1, 0};
 
-            int sum = maxSum(A, k);
-
-            System.out.println(sum);
+            int sum = maxSumUsingFixedSlidingWindow(A, k);
+            int res[] = maxSumUsingDynamicSlidingWindow(A, 8);
+            System.out.println("sum: "+sum);
+            System.out.println("minimumindexcount: ");
+            System.out.println("res 0: "+res[0]);
+            System.out.println("res 1: "+res[1]);
         }
 
-        static int maxSum(int[] A, int k) {
+        static int[] maxSumUsingDynamicSlidingWindow(int[] A, int target) {
+            int left = 0, right = 0, minimumIndexCount = Integer.MAX_VALUE, sum = 0, maxSum = Integer.MIN_VALUE;
+            int[] res = new int[2];
+
+            while(left < A.length && right < A.length) {
+                
+                if(left == right) {
+                    sum = A[left];
+                }
+                else if(left > 0){
+                    sum = (sum + A[right]) - A[left];
+                }
+                else {
+                    sum = sum + A[right];
+                }
+
+                System.out.println("left: "+left+", right: "+right+", sum: "+sum);
+
+                if(sum == target) {
+                    if((right - left+1) < minimumIndexCount) {
+                        minimumIndexCount = right - left+1;
+                        res = new int[2];
+                        res[0] = right;
+                        res[1] = left;
+                    }
+                    left++;
+                }
+                else if(sum > target) {
+                    left++;
+                }
+                else {
+                    right++;
+                }
+            }
+
+            return res;
+        }
+
+        static int maxSumUsingFixedSlidingWindow(int[] A, int k) {
             int i = 0, j = 0;
             int sum = 0, maxSum = Integer.MIN_VALUE;
             
